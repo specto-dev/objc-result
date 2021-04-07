@@ -14,8 +14,6 @@ objc_library(
         ],
         exclude = _PUBLIC_HEADERS,
     ),
-    module_name = "OCResult",
-    enable_modules = True,
     hdrs = _PUBLIC_HEADERS,
     visibility = ["//visibility:public"],
 )
