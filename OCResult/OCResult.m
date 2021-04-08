@@ -71,7 +71,7 @@
     }
 }
 
-- (OCResult *)flatMapError:(OCResult *(^ NS_NOESCAPE)(NSError *error))transform {
+- (OCResult *)flatMapError:(OCResult<id> *(^ NS_NOESCAPE)(NSError *error))transform {
     NSParameterAssert(transform);
     switch (_kind) {
         case OCResultSuccess:
