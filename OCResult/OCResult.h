@@ -2,6 +2,9 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
+typedef id<NSObject> OCResultValueSupertype;
+typedef OCResultValueSupertype OCResultNewValueType;
+
 typedef NS_ENUM(NSUInteger, OCResultKind) {
     /*! The result represents a success and holds a value. */
     OCResultSuccess,
@@ -18,15 +21,15 @@ typedef NS_ENUM(NSUInteger, OCResultKind) {
  It also helps to make sure that every error is either handled
  or passed along and not lost.
  */
-@interface OCResult<ValueType> : NSObject
+@interface OCResult<ValueType: OCResultValueSupertype> : NSObject
 
 - (instancetype)init NS_UNAVAILABLE;
 + (instancetype)new NS_UNAVAILABLE;
 
 /*! Constructs a result that holds a value. */
-+ (OCResult *)success:(ValueType)value;
++ (OCResult<ValueType> *)success:(ValueType)value;
 /*! Constructs a result that holds an error. */
-+ (OCResult *)failure:(NSError *)error;
++ (OCResult<ValueType> *)failure:(NSError *)error;
 
 /*!
  Either OCResultSuccess or OCResultFailure.
@@ -43,7 +46,7 @@ typedef NS_ENUM(NSUInteger, OCResultKind) {
  A failure result is returned unchanged.
  @param transform A value mapping block that takes an existing result value and returns a new result value.
  */
-- (OCResult *)map:(ValueType (^ NS_NOESCAPE)(ValueType value))transform;
+- (OCResult<OCResultNewValueType> *)map:(OCResultNewValueType(^ NS_NOESCAPE)(ValueType value))transform;
 /*!
  Replaces a failure result error and wraps it inside a new failure result object.
  A success result is returned unchanged.
@@ -55,8 +58,9 @@ typedef NS_ENUM(NSUInteger, OCResultKind) {
  Provides a new result based on the original success result value.
  A failure result is returned unchanged.
  @param transform A constructor block that takes an existing result value and produces a new result object of any kind.
+ @return An OCResult containing a value of any new type. Must match the type in the transform block return type.
  */
-- (OCResult *)flatMap:(OCResult * (^ NS_NOESCAPE)(ValueType value))transform;
+- (OCResult<OCResultNewValueType> *)flatMap:(OCResult<OCResultNewValueType> * (^ NS_NOESCAPE)(ValueType value))transform;
 /*!
  Provides a new result based on the original failure result error.
  A success result is returned unchanged.

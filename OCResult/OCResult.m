@@ -1,11 +1,11 @@
 #import "OCResult.h"
 
 @implementation OCResult {
-    id _value;
+    OCResultValueSupertype _value;
     NSError *_error;
 }
 
-- (instancetype)initWithValue:(id)value {
+- (instancetype)initWithValue:(OCResultValueSupertype)value {
     self = [super init];
     if (self) {
         _kind = OCResultSuccess;
@@ -23,7 +23,7 @@
     return self;
 }
 
-+ (OCResult *)success:(id)value {
++ (OCResult *)success:(OCResultValueSupertype)value {
     return [[OCResult alloc] initWithValue:value];
 }
 
@@ -41,7 +41,7 @@
     return _error;
 }
 
-- (OCResult *)map:(id (^ NS_NOESCAPE)(id value))transform {
+- (OCResult<OCResultNewValueType> *)map:(OCResultNewValueType (^ NS_NOESCAPE)(OCResultValueSupertype value))transform {
     NSParameterAssert(transform);
     switch (_kind) {
         case OCResultSuccess:
@@ -51,7 +51,7 @@
     }
 }
 
-- (OCResult *)mapError:(NSError *(^ NS_NOESCAPE)(NSError *error))transform {
+- (OCResult<OCResultValueSupertype> *)mapError:(NSError *(^ NS_NOESCAPE)(NSError *error))transform {
     NSParameterAssert(transform);
     switch (_kind) {
         case OCResultSuccess:
@@ -61,7 +61,7 @@
     }
 }
 
-- (OCResult *)flatMap:(OCResult *(^ NS_NOESCAPE)(id value))transform {
+- (OCResult<OCResultNewValueType> *)flatMap:(OCResult<OCResultNewValueType> *(^ NS_NOESCAPE)(OCResultValueSupertype value))transform {
     NSParameterAssert(transform);
     switch (_kind) {
         case OCResultSuccess:
@@ -71,7 +71,7 @@
     }
 }
 
-- (OCResult *)flatMapError:(OCResult<id> *(^ NS_NOESCAPE)(NSError *error))transform {
+- (OCResult<OCResultValueSupertype> *)flatMapError:(OCResult<OCResultValueSupertype> *(^ NS_NOESCAPE)(NSError *error))transform {
     NSParameterAssert(transform);
     switch (_kind) {
         case OCResultSuccess:

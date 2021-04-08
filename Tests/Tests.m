@@ -221,4 +221,18 @@
     XCTAssertEqual(actualError, expectedError);
 }
 
+// The following produces compiler warnings and may break builds that treat
+// warnings as errors.
+//- (void)testTypeMismatch {
+//    __unused OCResult<NSString *> *a = [OCResult<NSString *> success:@1]; // compiler warning
+//    __unused OCResult<NSString *> *b = [OCResult success:@2]; // no compiler warning! needs the type annotation
+//
+//    OCResult<NSNumber *> *c = [OCResult<NSNumber *> success:@1];
+//    __unused OCResult<NSNumber *> *d = [c map:^NSString* _Nonnull(__unused NSNumber * _Nonnull value) { return @"foo"; }]; // compiler warning
+//    __unused OCResult<NSNumber *> *e = [c map:^id<NSObject> _Nonnull(__unused NSNumber * _Nonnull value) { return @"foo"; }]; // compiler warning
+//
+//    __unused OCResult<NSNumber *> *f = [c flatMap:^OCResult<NSString *> * _Nonnull(__unused NSNumber * _Nonnull value) { return [OCResult<NSString *> success:@"foo"]; }]; // compiler warning
+//    __unused OCResult<NSNumber *> *g = [c flatMap:^OCResult<id<NSObject>> * _Nonnull(__unused NSNumber * _Nonnull value) { return [OCResult success:@"foo"]; }]; // compiler warning
+//}
+
 @end
